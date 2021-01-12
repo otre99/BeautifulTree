@@ -3,7 +3,6 @@
 #include "imageviewer.h"
 #include <cmath>
 #include <QPainter>
-#include <QDebug>
 #include <QFileDialog>
 #include <QColorDialog>
 #include <QElapsedTimer>
@@ -58,15 +57,15 @@ void MainWindow::on_pBDraw_clicked()
     bcolor_ = ui->labelBColor->palette().color(QPalette::Window);
     fcolor_ = ui->labelFColor->palette().color(QPalette::Window);
 
-    qDebug() << "####################################################";
-    qDebug() << "Max. Levels:" <<   max_level_;
-    qDebug() << "Angles:" << angles1_ << " to " << angles2_;
-    qDebug() << "Len:" << max_len_ ;
-    qDebug() << "Ball radius:" << ball_radius_ ;
-    qDebug() << "Branch Scale factor:" << bsf_ ;
-    qDebug() << "Irregular levels:" << irregular_levels_ ;
-    qDebug() << "Growing Branches: " << growing_branches_ ;
-    qDebug() << "####################################################";
+//    qDebug() << "####################################################";
+//    qDebug() << "Max. Levels:" <<   max_level_;
+//    qDebug() << "Angles:" << angles1_ << " to " << angles2_;
+//    qDebug() << "Len:" << max_len_ ;
+//    qDebug() << "Ball radius:" << ball_radius_ ;
+//    qDebug() << "Branch Scale factor:" << bsf_ ;
+//    qDebug() << "Irregular levels:" << irregular_levels_ ;
+//    qDebug() << "Growing Branches: " << growing_branches_ ;
+//    qDebug() << "####################################################";
 
 
     image_ = QImage(ss, QImage::Format_ARGB32);
@@ -104,8 +103,7 @@ void MainWindow::on_pBDraw_clicked()
     painter.drawPicture(0, 0, picture_drawer_);    // draw the picture at (0,0)
     painter.end();                                 // painting done
 
-    canvas_->AttachImagePtr(&image_);
-    on_horizontalSlider_valueChanged(ui->horizontalSlider->value());
+    canvas_->attachImagePtr(&image_);
 }
 
 void MainWindow::RecursiveDraw(QPainter *p, const QPointF &last_node, const QPointF &curr_node, const int level)
@@ -209,18 +207,9 @@ void MainWindow::DirectDraw(QPainter *p, const QPointF &last_node, const QPointF
 }
 
 
-
-
-
-void MainWindow::on_horizontalSlider_valueChanged(int value)
-{
-    canvas_->SetScf(value/500.0);
-}
-
-
 void MainWindow::on_pushButton_clicked()
 {
-    ui->horizontalSlider->setValue(500);
+    canvas_->setScf(1.0);
 }
 
 void MainWindow::on_doubleSpinBoxSf_valueChanged(double arg1)
@@ -237,7 +226,12 @@ void MainWindow::on_pushButtonSave_clicked()
     ss.setWidth(ui->labelCanvasW->text().toInt());
     ss.setHeight(ui->labelCanvasH->text().toInt());
     QImage canvas_image(ss, QImage::Format_ARGB32);
-    canvas_image.fill(Qt::white);
+
+    if (ui->checkBoxTranspaentBg->isChecked())
+        canvas_image.fill(Qt::transparent);
+    else
+        canvas_image.fill(Qt::white);
+
     QPainter painter(&canvas_image);
 
     const double scf = ui->doubleSpinBoxSf->value();

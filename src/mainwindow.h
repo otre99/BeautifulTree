@@ -21,7 +21,6 @@ public:
 
 private slots:
     void on_pBDraw_clicked();
-    void on_horizontalSlider_valueChanged(int value);
     void on_pushButton_clicked();
     void on_doubleSpinBoxSf_valueChanged(double arg1);
     void on_pushButtonSave_clicked();
